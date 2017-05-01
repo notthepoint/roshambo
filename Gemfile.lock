@@ -67,6 +67,9 @@ GEM
     nio4r (2.0.0)
     nokogiri (1.7.1)
       mini_portile2 (~> 2.1.0)
+    pg (0.20.0)
+    postgresql (1.0.0)
+      pg
     puma (3.8.2)
     rack (2.0.1)
     rack-test (0.6.3)
@@ -139,6 +142,7 @@ DEPENDENCIES
   byebug
   haml
   listen (~> 3.0.5)
+  postgresql
   puma (~> 3.0)
   rails (~> 5.0.2)
   sass-rails (~> 5.0)
