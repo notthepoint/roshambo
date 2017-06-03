@@ -23,6 +23,7 @@ class Referee
 			update_scores(round_results)
 		end
 		
+		stop_players
 		scores
 	end
 
@@ -38,18 +39,14 @@ class Referee
 	end
 
 	def update_scores(round_results)
-		p round_results
 		scores[round_winner(round_results)] += 1
 	end
 
 	def round_winner(round_results)
-		p round_results
 		calculate_winner(round_results[:player_1], round_results[:player_2])
 	end
 
 	def calculate_winner(round_results_1, round_results_2)
-		p "res 1 #{round_results_1}"
-		p "res 2 #{round_results_2}"
 		case [round_results_1, round_results_2]
 		when ['s','p'] || ['p','r'] || ['r','s']
 			:player_1
@@ -60,5 +57,10 @@ class Referee
 		else
 			:dud
 		end
+	end
+
+	def stop_players
+		player_1.stop
+		player_2.stop
 	end
 end

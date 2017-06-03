@@ -13,6 +13,10 @@ class Player
     response
 	end
 
+	def stop
+		container.stop
+	end
+
 	private
 
 	def run
