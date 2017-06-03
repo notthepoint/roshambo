@@ -1,8 +1,14 @@
 class Referee
-	def initialize(player1, player2, no_of_rounds)
-		@player_1 = Player.new(player1.code)
-		@player_2 = Player.new(player2.code)
+	def initialize(no_of_rounds)
 		@no_of_rounds = no_of_rounds
+		@players = {
+			player_1: nil,
+			player_2: nil
+		}
+		@player_bots = {
+			player_1: nil,
+			player_2: nil
+		}
 		@rounds = [{
 			player_1: '',
 			player_2: ''
@@ -15,7 +21,14 @@ class Referee
 		}
 	end
 
-	def bout
+	def bout(player_1, player_2)
+		@player_bots = {
+			player_1: Player.new(player_1.code),
+		  player_2: Player.new(player_2.code)
+		}
+
+	  wait_for_ready_player_bots
+
 		@no_of_rounds.times do
 			round_results = round
 
@@ -23,18 +36,21 @@ class Referee
 			update_scores(round_results)
 		end
 		
-		stop_players
-		scores
+		stop_player_bots
+		results = formatted_scores
+		reset_players
+
+		results
 	end
 
-	attr_accessor :player_1, :player_2, :rounds, :scores
+	attr_accessor :players, :rounds, :scores
 
 	private
 
 	def round
 		{}.tap do |round|
-	    round[:player_1] = player_1.next_move(rounds.last[:player_2])
-			round[:player_2] = player_2.next_move(rounds.last[:player_1])
+	    round[:player_1] = @player_bots[:player_1].next_move(rounds.last[:player_2])
+			round[:player_2] = @player_bots[:player_2].next_move(rounds.last[:player_1])
 		end
 	end
 
@@ -59,8 +75,23 @@ class Referee
 		end
 	end
 
-	def stop_players
-		player_1.stop
-		player_2.stop
+	def stop_player_bots
+		@player_bots.map do |_,player|
+			player.stop
+		end
+	end
+
+	def reset_players
+		players.map { |player_name, player| [player_name, nil] }.to_h
+		@player_bots.map { |player_name, player| [player_name, nil] }.to_h
+	end
+
+	def formatted_scores
+		puts @scores
+		@scores.map { |player, score| [players[player], score] }.to_h
+	end
+
+	def wait_for_ready_player_bots
+	  @player_bots.all? { |_,player| player.ready? }
 	end
 end

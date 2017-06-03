@@ -8,13 +8,32 @@ class Player
 	end
 
 	def next_move(previous='')
-    response = JSON.parse(HTTParty.get(url, query: { previous: previous }).body)["move"]
+    response = JSON.parse(HTTParty.get(next_move_url, query: { previous: previous }).body)["move"]
 
     response
 	end
 
 	def stop
 		container.stop
+	end
+
+	def ready?
+		tries = 0
+		responseCode = nil
+
+		while responseCode != "200" && tries < 5
+			tries += 1
+			sleep 1
+
+			begin
+			  response = HTTParty.get(ping_url)
+			  responseCode = response.response.code
+			rescue StandardError => e
+				puts e
+			end
+		end
+
+		responseCode == "200"
 	end
 
 	private
@@ -31,10 +50,18 @@ class Player
 	  })
 	end
 
+	def next_move_url
+		url + "/next_move"
+	end
+
+	def ping_url
+		url + "/ping"
+	end
+
 
 	def url
 		# 0.0.0.0 is set in sinatra app also
-		"http://0.0.0.0:#{port}/next_move"
+		@url ||= "http://0.0.0.0:#{port}"
 	end
 
 	def port
