@@ -10,3 +10,8 @@ get '/next_move' do
 	content_type :json
 	{ move: settings.player.next_move(previous) }.to_json
 end
+
+get '/ping' do
+	content_type :json
+	{ success: true }.to_json
+end
