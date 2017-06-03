@@ -1,5 +1,12 @@
 class Referee
-	def initialize(no_of_rounds)
+	BEATS = {
+		'r' => 's',
+		's' => 'p',
+		'p' => 'r',
+	}.freeze
+
+	def initialize(competition, no_of_rounds)
+		@competition = competition
 		@no_of_rounds = no_of_rounds
 		@players = {
 			player_1: nil,
@@ -13,19 +20,12 @@ class Referee
 			player_1: '',
 			player_2: ''
 		}]
-		@scores = {
-			player_1: 0,
-			player_2: 0,
-			draws: 0,
-			dud: 0
-		}
+
+		@match_scores = nil
 	end
 
 	def bout(player_1, player_2)
-		@player_bots = {
-			player_1: Player.new(player_1.code),
-		  player_2: Player.new(player_2.code)
-		}
+		set_up_bout(player_1, player_2)
 
 	  wait_for_ready_player_bots
 
@@ -37,41 +37,55 @@ class Referee
 		end
 		
 		stop_player_bots
-		results = formatted_scores
 		reset_players
 
-		results
+		match_scores.save
+		match_scores
 	end
 
-	attr_accessor :players, :rounds, :scores
+	attr_accessor :players, :rounds, :match_scores
 
 	private
 
+	def set_up_bout(player_1, player_2)
+		@players = {
+			player_1: player_1,
+			player_2: player_2
+		}
+
+		@player_bots = {
+			player_1: Player.new(player_1.code),
+		  player_2: Player.new(player_2.code)
+		}
+
+		@match_scores = MatchScore.new
+		@match_scores.competition = @competition
+		@match_scores.player_1 = player_1
+		@match_scores.player_2 = player_2
+	end
+
 	def round
 		{}.tap do |round|
-	    round[:player_1] = @player_bots[:player_1].next_move(rounds.last[:player_2])
-			round[:player_2] = @player_bots[:player_2].next_move(rounds.last[:player_1])
+	    round[:player_1] = validate(@player_bots[:player_1].next_move(rounds.last[:player_2]))
+			round[:player_2] = validate(@player_bots[:player_2].next_move(rounds.last[:player_1]))
 		end
 	end
 
 	def update_scores(round_results)
-		scores[round_winner(round_results)] += 1
-	end
+		if round_results[:player_1] == round_results[:player_2]
+			match_scores.draws += 1
+		end
 
-	def round_winner(round_results)
-		calculate_winner(round_results[:player_1], round_results[:player_2])
-	end
-
-	def calculate_winner(round_results_1, round_results_2)
-		case [round_results_1, round_results_2]
-		when ['s','p'] || ['p','r'] || ['r','s']
-			:player_1
-		when ['r','p'] || ['s','r'] || ['p','s']
-			:player_2
-		when ['p','p'] || ['r','r'] || ['s','s']
-			:draws
+		if BEATS[round_results[:player_1]] == round_results[:player_2]
+			match_scores.player_1_score += 1
 		else
-			:dud
+			match_scores.player_2_score += 1
+		end
+	end
+
+	def validate(result)
+		result.tap do |result|
+			raise StandardError, "#{result} invalid" unless BEATS.keys.include? result
 		end
 	end
 
@@ -86,10 +100,14 @@ class Referee
 		@player_bots.map { |player_name, player| [player_name, nil] }.to_h
 	end
 
-	def formatted_scores
-		puts @scores
-		@scores.map { |player, score| [players[player], score] }.to_h
-	end
+	# def formatted_scores
+	# 	# @scores.map { |player, score| [players[player], score] }.to_h
+	# 	Match.new({
+	# 		player_1: players[:player_1],
+	# 		player_2: players[:player_2],
+	# 		player_1_score:
+	# 		})
+	# end
 
 	def wait_for_ready_player_bots
 	  @player_bots.all? { |_,player| player.ready? }
