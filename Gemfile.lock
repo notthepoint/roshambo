@@ -54,6 +54,8 @@ GEM
       activesupport (>= 4.1.0)
     haml (4.0.7)
       tilt
+    httparty (0.15.5)
+      multi_xml (>= 0.5.2)
     i18n (0.8.1)
     json (2.1.0)
     listen (3.0.8)
@@ -69,6 +71,7 @@ GEM
     mime-types-data (3.2016.0521)
     mini_portile2 (2.1.0)
     minitest (5.10.1)
+    multi_xml (0.6.0)
     nio4r (2.0.0)
     nokogiri (1.7.1)
       mini_portile2 (~> 2.1.0)
@@ -147,6 +150,7 @@ DEPENDENCIES
   byebug
   docker-api
   haml
+  httparty
   listen (~> 3.0.5)
   postgresql
   puma (~> 3.0)

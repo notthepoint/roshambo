@@ -46,3 +46,4 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 # gem 'activeuuid', git: 'https://github.com/jashmenn/activeuuid.git'
 gem 'postgresql'
 gem 'docker-api'
+gem 'httparty'
