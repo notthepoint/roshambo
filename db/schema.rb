@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170603140629) do
+ActiveRecord::Schema.define(version: 20170603195558) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,22 @@ ActiveRecord::Schema.define(version: 20170603140629) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid     "user_id"
+  end
+
+  create_table "competitions", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "match_scores", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+    t.uuid     "competition_id"
+    t.uuid     "player_1_id"
+    t.uuid     "player_2_id"
+    t.integer  "player_1_score", default: 0
+    t.integer  "player_2_score", default: 0
+    t.integer  "draws",          default: 0
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
   create_table "users", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
