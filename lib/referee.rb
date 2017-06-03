@@ -100,15 +100,6 @@ class Referee
 		@player_bots.map { |player_name, player| [player_name, nil] }.to_h
 	end
 
-	# def formatted_scores
-	# 	# @scores.map { |player, score| [players[player], score] }.to_h
-	# 	Match.new({
-	# 		player_1: players[:player_1],
-	# 		player_2: players[:player_2],
-	# 		player_1_score:
-	# 		})
-	# end
-
 	def wait_for_ready_player_bots
 	  @player_bots.all? { |_,player| player.ready? }
 	end
