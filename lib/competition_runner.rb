@@ -34,10 +34,12 @@ class CompetitionRunner
 		winners = []
 
 		bouts.each do |players|
-			bout_scores.push({ "#{match_no}": []})
-			# bout_scores[match_no] = @referee.bout(no_of_rounds_in_a_bout: no_of_rounds_in_a_bout, player_1: players[0], player_2: players[1])
-			# winners.push(winner(bout_scores))
-			bout_results = @referee.bout(no_of_rounds_in_a_bout: no_of_rounds_in_a_bout, player_1: players[0], player_2: players[1])
+			bout_results = @referee.bout(
+				no_of_rounds_in_a_bout: no_of_rounds_in_a_bout,
+				player_1: players[0],
+				player_2: players[1],
+				match_no: match_no)
+
 			bout_scores.push(bout_results[:scores])
 			winners.push(bout_results[:winner])
 		end
