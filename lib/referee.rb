@@ -10,17 +10,22 @@ class Referee
 		@bout_scores = nil
 	end
 
-	def bout(no_of_rounds_in_a_bout:, player_1:, player_2:)
+	def bout(no_of_rounds_in_a_bout:, player_1:, player_2:, match_no: 0)
 		set_empty_variables
-		set_up_bout(no_of_rounds_in_a_bout: no_of_rounds_in_a_bout, player_1: player_1, player_2: player_2)
+		set_up_bout(
+			no_of_rounds_in_a_bout: no_of_rounds_in_a_bout,
+			player_1: player_1,
+			player_2: player_2,
+			match_no: match_no
+		)
 	  wait_for_ready_player_bots
 
 		run_rounds
 		
 		finish_bout
-		
+
 		{
-			scores: bout_scores,
+			bout_scores: bout_scores,
 			winner: winner
 		}
 	end
@@ -29,7 +34,7 @@ class Referee
 
 	private
 
-	def set_up_bout(no_of_rounds_in_a_bout:, player_1:, player_2:)
+	def set_up_bout(no_of_rounds_in_a_bout:, player_1:, player_2:, match_no:)
 		@no_of_rounds_in_a_bout = no_of_rounds_in_a_bout
 
 		@players = {
@@ -43,11 +48,12 @@ class Referee
 		}
 
 		@bout_scores = {
-		  player_1: player_1,
-		  player_2: player_2,
+		  player_1: player_1.id,
+		  player_2: player_2.id,
 		  player_1_score: 0,
 		  player_2_score: 0,
-		  draws: 0
+		  draws: 0,
+		  match_no: match_no
 		}
 	end
 
