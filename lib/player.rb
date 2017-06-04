@@ -14,7 +14,7 @@ class Player
 	end
 
 	def stop
-		container.stop
+		container.remove(force: true)
 	end
 
 	def ready?
