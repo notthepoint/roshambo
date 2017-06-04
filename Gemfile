@@ -47,3 +47,9 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'postgresql'
 gem 'docker-api'
 gem 'httparty'
+
+group :development, :test do
+  gem 'rspec-rails', '~> 3.5'
+  gem 'factory_girl_rails'
+  gem 'pry'
+end
