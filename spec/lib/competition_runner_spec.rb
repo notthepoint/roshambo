@@ -16,7 +16,6 @@ RSpec.describe CompetitionRunner do
   	end
 
   	context 'with an even number of players' do
-  		let(:competition) { double(:competition) }
   		let(:referee) { double(:referee,
   			bout: bot_players.sample) }
   		let(:bot_players) { build_list(:bot, 8) }
@@ -27,7 +26,6 @@ RSpec.describe CompetitionRunner do
   			expect(comp_runner).to receive(:match).exactly(3).times
 
   			comp_runner.run_competition(
-  				competition: competition,
   				referee: referee,
   				competitors: bot_players)
   		end
