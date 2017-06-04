@@ -1,11 +1,24 @@
 class CompetitionRunner
-	def initialize(no_of_rounds_in_a_bout=2)
-		@no_of_rounds_in_a_bout = no_of_rounds_in_a_bout
+	def initialize
 	end
 
-	def competition(competitors)
-		set_up_competition(competitors)
+	def run_competition(competition: Competition.create, referee: Referee, competitors:, no_of_rounds_in_a_bout: 2)
+		set_up_competition(competition, referee, competitors)
+		compete
+	end
 
+	private
+
+	attr_accessor :no_of_rounds_in_a_bout, :competition, :referee, :competitors
+
+	def set_up_competition(competition, referee, competitors)
+		@competition = competition
+		@referee = referee
+		@competitors = competitors
+		@no_of_matches = Math.log2(@competitors.length).to_i
+	end
+
+	def compete
 		match_competitors = @competitors
 		
 		@no_of_matches.times do |i|
@@ -13,17 +26,6 @@ class CompetitionRunner
 		end
 
 		puts match_competitors.inspect
-	end
-
-	attr_accessor :no_of_rounds_in_a_bout
-
-	private
-
-	def set_up_competition(competitors)
-		@competitors = competitors
-		@competition = Competition.create
-		@referee = Referee.new(@competition, no_of_rounds_in_a_bout)
-		@no_of_matches = Math.log2(@competitors.length).to_i
 	end
 
 	def match(match_competitors)

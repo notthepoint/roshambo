@@ -5,17 +5,14 @@ class Referee
 		'p' => 'r',
 	}.freeze
 
-	def initialize(competition:, no_of_rounds:, player: Player)
+	def initialize(player: Player)
 		@player = player
-		@competition = competition
-		@no_of_rounds = no_of_rounds
-
 		@match_scores = nil
 	end
 
-	def bout(player_1, player_2)
+	def bout(competition:, no_of_rounds_in_a_bout:, player_1:, player_2:)
 		set_initial_variables
-		set_up_bout(player_1, player_2)
+		set_up_bout(competition, no_of_rounds_in_a_bout, player_1, player_2)
 	  wait_for_ready_player_bots
 
 		run_rounds
@@ -28,7 +25,9 @@ class Referee
 
 	private
 
-	def set_up_bout(player_1, player_2)
+	def set_up_bout(competition, no_of_rounds_in_a_bout, player_1, player_2)
+		@competition = competition
+		@no_of_rounds = no_of_rounds_in_a_bout
 
 		@players = {
 			player_1: player_1,
