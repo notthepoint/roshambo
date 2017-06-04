@@ -7,26 +7,25 @@ class Referee
 
 	def initialize(player: Player)
 		@player = player
-		@match_scores = nil
+		@bout_scores = nil
 	end
 
-	def bout(competition:, no_of_rounds_in_a_bout:, player_1:, player_2:)
-		set_initial_variables
-		set_up_bout(competition, no_of_rounds_in_a_bout, player_1, player_2)
+	def bout(no_of_rounds_in_a_bout:, player_1:, player_2:)
+		set_empty_variables
+		set_up_bout(no_of_rounds_in_a_bout: no_of_rounds_in_a_bout, player_1: player_1, player_2: player_2)
 	  wait_for_ready_player_bots
 
 		run_rounds
 		
 		finish_bout
-		match_scores
+		bout_scores
 	end
 
-	attr_accessor :players, :rounds, :match_scores
+	attr_accessor :players, :rounds, :bout_scores
 
 	private
 
-	def set_up_bout(competition, no_of_rounds_in_a_bout, player_1, player_2)
-		@competition = competition
+	def set_up_bout(no_of_rounds_in_a_bout:, player_1:, player_2:)
 		@no_of_rounds = no_of_rounds_in_a_bout
 
 		@players = {
@@ -39,10 +38,13 @@ class Referee
 		  player_2: @player.new(player_2.code)
 		}
 
-		@match_scores = MatchScore.new({
-		  competition: @competition,
+		@bout_scores = {
 		  player_1: player_1,
-		  player_2: player_2})
+		  player_2: player_2,
+		  player_1_score: 0,
+		  player_2_score: 0,
+		  draws: 0
+		}
 	end
 
 	def run_rounds
@@ -63,13 +65,11 @@ class Referee
 
 	def update_scores(round_results)
 		if round_results[:player_1] == round_results[:player_2]
-			match_scores.draws += 1
-		end
-
-		if BEATS[round_results[:player_1]] == round_results[:player_2]
-			match_scores.player_1_score += 1
+			bout_scores[:draws] += 1
+		elsif BEATS[round_results[:player_1]] == round_results[:player_2]
+			bout_scores[:player_1_score] += 1
 		else
-			match_scores.player_2_score += 1
+			bout_scores[:player_2_score] += 1
 		end
 	end
 
@@ -85,13 +85,10 @@ class Referee
 		end
 	end
 
-	def set_initial_variables
+	def set_empty_variables
 		@players = { player_1: nil, player_2: nil }
 		@player_bots = { player_1: nil, player_2: nil }
-		@rounds = [{
-			player_1: '',
-			player_2: ''
-		}]
+		@rounds = [{ player_1: '', player_2: '' }]
 	end
 
 	def wait_for_ready_player_bots
@@ -100,7 +97,5 @@ class Referee
 
 	def finish_bout
 		stop_player_bots
-
-		match_scores.save
 	end
 end
