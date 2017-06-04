@@ -3,7 +3,22 @@ require "./lib/competition_runner.rb"
 
 RSpec.describe CompetitionRunner do
   describe '#run_competition' do
-  	let(:referee) { double(:referee) }
+    let(:referee_result) { 
+      {scores: { something: 'yeah' },
+            winner: bot_players.sample}
+    }
+    let(:bot_players) { build_list(:bot, 2) }
+    let(:referee) { double(:referee, bout: referee_result) }
+
+    it 'returns scores from referee' do
+      comp_runner = described_class.new
+
+      results = comp_runner.run_competition(
+        referee: referee,
+        competitors: bot_players)
+      
+      expect(results[0]).to have_key(:something)
+    end
 
   	context 'with an odd number of players' do
   		let(:bot_players) { build_list(:bot, 5) }
@@ -23,7 +38,7 @@ RSpec.describe CompetitionRunner do
   		it 'runs the correct number of matches' do
   			comp_runner = described_class.new
 
-  			expect(comp_runner).to receive(:match).exactly(3).times
+  			expect(comp_runner).to receive(:run_match).exactly(3).times
 
   			comp_runner.run_competition(
   				referee: referee,

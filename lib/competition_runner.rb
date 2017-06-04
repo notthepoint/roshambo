@@ -23,13 +23,13 @@ class CompetitionRunner
 		match_competitors = @competitors
 		
 		@no_of_matches.times do |i|
-			match_competitors = match(i, match_competitors)
+			match_competitors = run_match(i, match_competitors)
 		end
 
-		puts match_competitors.inspect
+		bout_scores
 	end
 
-	def match(match_no, match_competitors)
+	def run_match(match_no, match_competitors)
 		bouts = match_competitors.each_slice(2).to_a
 		winners = []
 
@@ -45,9 +45,5 @@ class CompetitionRunner
 		end
 
 		winners
-	end
-
-	def winner(bout_scores)
-
 	end
 end
