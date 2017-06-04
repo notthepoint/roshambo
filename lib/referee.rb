@@ -18,7 +18,11 @@ class Referee
 		run_rounds
 		
 		finish_bout
-		bout_scores
+		
+		{
+			scores: bout_scores,
+			winner: winner
+		}
 	end
 
 	attr_accessor :players, :rounds, :bout_scores
@@ -26,7 +30,7 @@ class Referee
 	private
 
 	def set_up_bout(no_of_rounds_in_a_bout:, player_1:, player_2:)
-		@no_of_rounds = no_of_rounds_in_a_bout
+		@no_of_rounds_in_a_bout = no_of_rounds_in_a_bout
 
 		@players = {
 			player_1: player_1,
@@ -48,7 +52,7 @@ class Referee
 	end
 
 	def run_rounds
-		@no_of_rounds.times do
+		@no_of_rounds_in_a_bout.times do
 			round_results = round
 
 			rounds.push(round_results)
@@ -97,5 +101,15 @@ class Referee
 
 	def finish_bout
 		stop_player_bots
+	end
+
+	def winner
+		if @bout_scores[:player_1_score] > @bout_scores[:player_2_score]
+			@players[:player_1]
+		elsif @bout_scores[:player_2_score] > @bout_scores[:player_1_score]
+			@players[:player_2]
+		else
+			nil
+		end
 	end
 end

@@ -33,8 +33,8 @@ RSpec.describe Referee do
 
       bout_scores = referee.bout(no_of_rounds_in_a_bout: 2, player_1: player_1, player_2: player_2)
 
-      expect(bout_scores[:player_1]).to eq player_1
-      expect(bout_scores[:player_2]).to eq player_2
+      expect(bout_scores[:scores][:player_1]).to eq player_1
+      expect(bout_scores[:scores][:player_2]).to eq player_2
     end
 
     it 'runs the correct amount of rounds' do
@@ -83,11 +83,11 @@ RSpec.describe Referee do
 
       result = referee.bout(no_of_rounds_in_a_bout: 3, player_1: player_1, player_2: player_2)
 
-      expect(result[:player_1]).to eq player_1
-      expect(result[:player_2]).to eq player_2
-      expect(result[:player_1_score]).to eq 0
-      expect(result[:player_2_score]).to eq 0
-      expect(result[:draws]).to eq 3
+      expect(result[:scores][:player_1]).to eq player_1
+      expect(result[:scores][:player_2]).to eq player_2
+      expect(result[:scores][:player_1_score]).to eq 0
+      expect(result[:scores][:player_2_score]).to eq 0
+      expect(result[:scores][:draws]).to eq 3
     end
   end
 end
